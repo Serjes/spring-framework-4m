@@ -32,10 +32,6 @@ management:
       show-details: always
     metrics:
       enabled: true
-#  security:
-#    enabled: false
-#  server:
-#    port: 8090
 logging:
   file: app.log
 info:

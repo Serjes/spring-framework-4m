@@ -12,12 +12,15 @@ import ru.otus.dz31.repository.AuthorRepository;
 import ru.otus.dz31.repository.BookRepository;
 import ru.otus.dz31.repository.GenreRepository;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 @Transactional
 @Service
 public class LibraryServiceImpl implements LibraryService {
+
+    private static final String LIBRARY_HYSTRIX_TIMEOUT = "2000";
 
     @Autowired
     private BookRepository bookRepository;
@@ -34,7 +37,12 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     @Override
-    @HystrixCommand(commandKey = "addBook", groupKey = "LibraryService")
+    @HystrixCommand(commandKey = "addBook", groupKey = "LibraryService",
+            commandProperties = {
+                    @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds",
+                            value = LIBRARY_HYSTRIX_TIMEOUT)
+            }
+    )
     public void addBook(String title, String authorName, String authorLastName, String genreName) {
         Optional<Author> authorOptional = authorRepository.findByFirstNameAndLastName(authorName, authorLastName);
         Author author;
@@ -55,7 +63,12 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     @Override
-    @HystrixCommand(commandKey = "updateBook", groupKey = "LibraryService")
+    @HystrixCommand(commandKey = "updateBook", groupKey = "LibraryService",
+            commandProperties = {
+                    @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds",
+                            value = LIBRARY_HYSTRIX_TIMEOUT)
+            }
+    )
     public void updateBook(Integer id, String title, String authorName, String authorLastName, String genreName) {
         Optional<Book> bookOptional = bookRepository.findById(id);
         if (bookOptional.isPresent()) {
@@ -87,18 +100,28 @@ public class LibraryServiceImpl implements LibraryService {
     @Override
     @Transactional(readOnly = true)
     @HystrixCommand(commandKey = "listBook", groupKey = "LibraryService",
+            fallbackMethod = "fallbackListBooks",
             commandProperties = {
-                    @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "5000")
+                    @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds",
+                            value = LIBRARY_HYSTRIX_TIMEOUT)
             }
     )
     public List<Book> listBooks() {
         return bookRepository.findAll();
+    }
 
+    public List<Book> fallbackListBooks(){
+        return Arrays.asList(new Book("Проблемы", new Author("с","Базой"), new Genre("Данных")));
     }
 
     @Override
     @Transactional(readOnly = true)
-    @HystrixCommand(commandKey = "count", groupKey = "LibraryService")
+    @HystrixCommand(commandKey = "count", groupKey = "LibraryService",
+            commandProperties = {
+                    @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds",
+                            value = LIBRARY_HYSTRIX_TIMEOUT)
+            }
+    )
     public long count() {
         return bookRepository.count();
     }
@@ -117,7 +140,12 @@ public class LibraryServiceImpl implements LibraryService {
 
     @Override
     @Transactional(readOnly = true)
-    @HystrixCommand(commandKey = "findBook", groupKey = "LibraryService")
+    @HystrixCommand(commandKey = "findBook", groupKey = "LibraryService",
+            commandProperties = {
+                    @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds",
+                            value = LIBRARY_HYSTRIX_TIMEOUT)
+            }
+    )
     public Optional<Book> findBookById(Integer id) {
         return bookRepository.findById(id);
     }
@@ -125,7 +153,8 @@ public class LibraryServiceImpl implements LibraryService {
     @Override
     @HystrixCommand(commandKey = "delBook", groupKey = "LibraryService",
             commandProperties = {
-                    @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "5000")
+                    @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds",
+                            value = LIBRARY_HYSTRIX_TIMEOUT)
             })
     public void delBook(Integer id) {
         bookRepository.deleteById(id);
