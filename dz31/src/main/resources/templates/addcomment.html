@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Add comment</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        label {
+            display: inline-block;
+            width: 200px;
+        }
+
+        input {
+            width: 300px;
+        }
+
+        input:read-only {
+            background: lightgray;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<h1>Комментарий к книге <u type="text" th:text="${commentDto.bookTitle}"></u></h1>
+
+<form id="edit-form" th:action="@{/comments/add/}+(${commentDto.id}?:'')" th:object="${commentDto}" th:method="POST" action="comments.html">
+
+    <div class="row">
+        <label for="commentContent-input">Содержание коментария:</label>
+        <input id="commentContent-input" type="text" th:field="*{commentContent}"/>
+    </div>
+
+    <div class="row">
+        <label for="bookId-input">ID книги:</label>
+        <input id="bookId-input" readonly="readonly" type="text"  th:field="*{bookId}" />
+    </div>
+
+    <div class="row">
+        <button type="submit">Сохранить</button>
+    </div>
+</form>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .comments, .comments td {
+            border: 1px solid lightgray;
+            padding: 5px;
+        }
+
+        label {
+            display: inline-block;
+            width: 100px;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<a th:href="@{/}" href="index.html">Библиотека</a>
+<br>
+<h1>Комментарии к книге:</h1>
+<table class="comments">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Содержание</th>
+        <th>Книга</th>
+        <th>Редактирование</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="comment : ${comments}">
+        <td width="30" th:text="${comment.id}" ></td>
+        <td width="350" th:text="${comment.content}" ></td>
+        <td width="150" th:text="${comment.book.title}" ></td>
+        <td width="50"  ><a th:href="@{/addcomment/edit(id=${comment.id})}" href="addcomment.html">Изменить</a></td>
+    </tr>
+    </tbody>
+</table>
+<br>
+<a th:href="@{/addcomment(id=${bookId})}" href="addcomment.html"><h3>Добавить комментарий</h3></a>
+<br>
+<br>
+
+<form id="edit-form" th:action="@{/comments/delete/}" th:method="POST">
+    <h3>Удаление комментария:</h3>
+    <div class="row">
+        <label for="commentId-input">ID:</label>
+        <input id="commentId-input" type="text" th:field="${commentDto.id}" value="1" />
+    </div>
+    <div class="row">
+        <button width="150" type="submit">Удалить</button>
+    </div>
+</form>
+
+</body>
+</html>
