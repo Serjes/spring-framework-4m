@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .books, .books td {
+            border: 1px solid lightgray;
+            padding: 5px;
+        }
+
+        label {
+            display: inline-block;
+            width: 100px;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<a th:href="@{/}" href="index.html">Библиотека</a>
+<br>
+<h1>Книги:</h1>
+
+<table class="books">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Название</th>
+        <th>Имя автора</th>
+        <th>Фамилия автора</th>
+        <th>Жанр</th>
+        <th>Комментарии</th>
+        <th>Редактирование</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="book : ${books}">
+        <td width="30" th:text="${book.id}" >1</td>
+        <td width="150 " th:text="${book.title}" >Foo</td>
+        <td width="150 " th:text="${book.author.firstName}" >John</td>
+        <td width="150" th:text="${book.author.lastName}" >Doe</td>
+        <td width="100" th:text="${book.genre.name}" >fantasy</td>
+        <td width="150" ><a th:href="@{/comments(book-id=${book.id})}" href="comments.html">Смотреть/добавить</a></td>
+        <td width="50"  ><a th:href="@{/addbook/edit(id=${book.id})}" href="addbook.html">Изменить</a></td>
+    </tr>
+    </tbody>
+</table>
+<br>
+<a th:href="@{/addbook}" href="addbook.html"><h3>Добавить книгу</h3></a>
+<br>
+<br>
+
+<form id="edit-form" th:action="@{/books/delete/}" th:method="POST">
+    <h3>Удаление книги:</h3>
+    <div class="row">
+        <label for="bookId-input">ID:</label>
+        <input id="bookId-input" type="text" th:field="${bookDto.id}" value="1" />
+    </div>
+    <div class="row">
+        <button width="150" type="submit">Удалить</button>
+    </div>
+</form>
+
+</body>
+</html>

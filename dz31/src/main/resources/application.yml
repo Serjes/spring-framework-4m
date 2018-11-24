@@ -1,0 +1,43 @@
+application:
+  version: 0.1
+spring:
+  datasource:
+    url: jdbc:postgresql://188.227.18.141:5432/lib_spring_mvc
+    username: temp_user
+    password: temp_pas
+    driver-class-name: org.postgresql.Driver
+  shell:
+    interactive:
+      enabled: false
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        temp:
+          use_jdbc_metadata_defaults: false
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+    hibernate:
+      ddl-auto: update
+  security:
+    enabled: false
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    shutdown:
+      enabled: true
+    health:
+      show-details: always
+    metrics:
+      enabled: true
+logging:
+  file: app.log
+info:
+  app:
+    name: @project.name@
+    version: @project.version@
+    description: @project.description@
+    java:
+      version: @java.version@
